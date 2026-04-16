@@ -1,31 +1,53 @@
 # HarborWatch
 
-HarborWatch is a script-first computer vision pipeline for maritime object detection from coastal videos.
+HarborWatch is an end-to-end maritime computer vision project that turns raw coastal videos into structured vessel and buoy detections.
 
-It covers the full workflow:
-- Video registry creation
-- Frame sampling
-- CVAT annotation and validation
-- COCO split preparation
-- RF-DETR dataset export and training
-- Offline inference with video and structured logs
+The repository is built as a production-style portfolio project, not a notebook demo:
+- Data intake from raw videos
+- Frame sampling and dataset creation
+- CVAT annotation + validation workflow
+- RF-DETR training and retraining
+- Offline video inference with saved analytics artifacts
 
-## Detection Classes
+## Classes
 - `large_vessel`
 - `small_craft`
 - `buoy`
 
-## Project Structure
-```text
-harborwatch/
-├── configs/                  # YAML configs for annotation, training, inference
-├── data/                     # local datasets, registries, exports (ignored by git)
-├── docs/                     # project docs and demo media
-├── outputs/                  # training/inference/audit artifacts (ignored by git)
-├── scripts/                  # end-to-end pipeline scripts
-├── requirements.txt
-└── README.md
-```
+## Demo
+
+### Snapshots
+| Snapshot 1 | Snapshot 2 |
+| --- | --- |
+| ![Snapshot 1](docs/images/snapshot_01.jpg) | ![Snapshot 2](docs/images/snapshot_02.jpg) |
+
+| Snapshot 3 | Snapshot 4 |
+| --- | --- |
+| ![Snapshot 3](docs/images/snapshot_03.jpg) | ![Snapshot 4](docs/images/snapshot_04.jpg) |
+
+### GIF Previews
+| Demo 1 | Demo 2 |
+| --- | --- |
+| ![Demo 1](docs/images/demo_01.gif) | ![Demo 2](docs/images/demo_02.gif) |
+
+| Demo 3 | Demo 4 |
+| --- | --- |
+| ![Demo 3](docs/images/demo_03.gif) | ![Demo 4](docs/images/demo_04.gif) |
+
+If a markdown client does not animate GIFs inline, open them directly:
+- [Demo 1](docs/images/demo_01.gif)
+- [Demo 2](docs/images/demo_02.gif)
+- [Demo 3](docs/images/demo_03.gif)
+- [Demo 4](docs/images/demo_04.gif)
+
+## End-to-End Pipeline
+1. Register source videos and build a video registry.
+2. Sample frames into an annotation pool.
+3. Annotate in CVAT and validate exports.
+4. Build COCO train/val/test splits by video.
+5. Export RF-DETR-ready dataset layout.
+6. Train baseline model and iterate.
+7. Run offline inference and save outputs.
 
 ## Setup
 ```bash
@@ -36,7 +58,7 @@ pip install -r requirements.txt
 
 ## Quick Start
 
-### 1. Register raw videos
+### 1) Register raw videos
 ```bash
 python scripts/register_videos.py \
   --video-dir data/raw/smd_visible_onshore/videos \
@@ -46,7 +68,7 @@ python scripts/register_videos.py \
   --recursive
 ```
 
-### 2. Sample frames for annotation
+### 2) Sample frames
 ```bash
 python scripts/sample_frames.py \
   --video-root data/raw/smd_visible_onshore/videos \
@@ -59,7 +81,7 @@ python scripts/sample_frames.py \
   --only-keep-for-mvp-yes
 ```
 
-### 3. Validate CVAT COCO export
+### 3) Validate CVAT COCO export
 ```bash
 python scripts/validate_coco_export.py \
   --input-json data/annotations/raw/annotations.json \
@@ -67,7 +89,7 @@ python scripts/validate_coco_export.py \
   --output-json outputs/data_audit/phase3/annotation_validation_report.json
 ```
 
-### 4. Build train/val/test COCO splits
+### 4) Prepare COCO splits
 ```bash
 python scripts/prepare_coco_splits.py \
   --input-json data/annotations/v2/annotations_clean.json \
@@ -79,7 +101,7 @@ python scripts/prepare_coco_splits.py \
   --copy-mode copy
 ```
 
-### 5. Export RF-DETR dataset layout
+### 5) Export for RF-DETR
 ```bash
 python scripts/export_for_rfdetr.py \
   --input-dir data/processed/harborwatch_coco_v2_clean \
@@ -87,17 +109,18 @@ python scripts/export_for_rfdetr.py \
   --copy-mode copy
 ```
 
-### 6. Train RF-DETR
+### 6) Train model
 ```bash
 python scripts/train_rfdetr_baseline.py --config configs/train_rfdetr.yaml
 ```
 
-### 7. Run offline inference
+### 7) Inference on video
 ```bash
 python scripts/infer_video.py --config configs/infer_video.yaml
 ```
 
-Inference outputs are written under `outputs/runs/<run_name>/`:
+## Inference Artifacts
+Each run writes a complete output folder under `outputs/runs/<run_name>/`:
 - `annotated_video.mp4`
 - `detections.csv`
 - `detections.jsonl`
@@ -105,77 +128,30 @@ Inference outputs are written under `outputs/runs/<run_name>/`:
 - `summary.md`
 - `snapshots/`
 
-## Key Config Files
-- `configs/project.yaml`: project metadata and path defaults
-- `configs/annotation.yaml`: class taxonomy and annotation policy
-- `configs/train_rfdetr*.yaml`: training runs and resume profiles
-- `configs/infer_video.yaml`: inference model/video/output settings
+## Key Files
+- `configs/project.yaml`
+- `configs/annotation.yaml`
+- `configs/train_rfdetr*.yaml`
+- `configs/infer_video.yaml`
+- `scripts/`
+- `docs/annotation_guidelines.md`
+- `docs/class_taxonomy.md`
+- `docs/PROJECT_SCOPE.md`
 
-## Annotation Workflow
-1. Manually label initial frames in CVAT.
-2. Train a baseline detector.
-3. Auto-label more frames with `scripts/export_cvat_predictions.py`.
-4. Correct labels in CVAT.
-5. Retrain on cleaned exports.
+## Repository Layout
+```text
+harborwatch/
+├── configs/     # YAML configs
+├── data/        # local datasets/registries (ignored by git)
+├── docs/        # documentation and media
+├── outputs/     # runs, checkpoints, audits (ignored by git)
+├── scripts/     # pipeline scripts
+├── requirements.txt
+└── README.md
+```
 
-## Demo Media
-
-### Snapshots
-<table>
-  <tr>
-    <td align="center">
-      <img src="docs/images/snapshot_01.jpg" width="420"><br>
-      <sub>Snapshot 1</sub>
-    </td>
-    <td align="center">
-      <img src="docs/images/snapshot_02.jpg" width="420"><br>
-      <sub>Snapshot 2</sub>
-    </td>
-  </tr>
-  <tr>
-    <td align="center">
-      <img src="docs/images/snapshot_03.jpg" width="420"><br>
-      <sub>Snapshot 3</sub>
-    </td>
-    <td align="center">
-      <img src="docs/images/snapshot_04.jpg" width="420"><br>
-      <sub>Snapshot 4</sub>
-    </td>
-  </tr>
-</table>
-
-### GIFs
-<table>
-  <tr>
-    <td align="center">
-      <img src="docs/images/demo_01.gif" width="420"><br>
-      <sub>Demo 1</sub>
-    </td>
-    <td align="center">
-      <img src="docs/images/demo_02.gif" width="420"><br>
-      <sub>Demo 2</sub>
-    </td>
-  </tr>
-  <tr>
-    <td align="center">
-      <img src="docs/images/demo_03.gif" width="420"><br>
-      <sub>Demo 3</sub>
-    </td>
-    <td align="center">
-      <img src="docs/images/demo_04.gif" width="420"><br>
-      <sub>Demo 4</sub>
-    </td>
-  </tr>
-</table>
-
-## Notes on Version Control
-This repository is code/docs first. Large local artifacts should stay out of git:
-- Raw/interim/processed data
-- CVAT upload frame dumps
-- Training checkpoints
-- Inference outputs and audits
-
-Use `.gitignore` to keep these untracked while retaining reproducible scripts/configs.
+## Version Control Note
+The repo tracks code, configs, and docs. Large local artifacts are ignored through `.gitignore` (`data/` and `outputs/`).
 
 ## License
 MIT
