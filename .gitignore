@@ -17,15 +17,10 @@ Thumbs.db
 .ipynb_checkpoints/
 
 # Data
-data/raw/
-data/interim/
-data/processed/
+data/
 
 # Heavy outputs
-outputs/train/
-outputs/runs/
-outputs/analysis/
-outputs/auto_annotate/
+outputs/
 
 # Model files
 *.ckpt
