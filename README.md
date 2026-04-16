@@ -40,6 +40,22 @@ If a markdown client does not animate GIFs inline, open them directly:
 - [Demo 3](docs/images/demo_03.gif)
 - [Demo 4](docs/images/demo_04.gif)
 
+## Validation Metrics Reached at Epoch 53
+
+### Overall
+- mAP 50:95: **0.4917**
+- mAR: **0.6554**
+- AP50: **0.5404**
+- AP75: **0.5853**
+- F1 sweep: **0.6537**
+- Precision: **0.9325**
+- Recall: **0.5491**
+
+### Per-class
+- **buoy** — AP 50:95: **0.2431**, AR: **0.2952**, F1: **0.3797**, Precision: **0.9375**, Recall: **0.2381**
+- **large_vessel** — AP 50:95: **0.7116**, AR: **0.7866**, F1: **0.8833**, Precision: **0.9114**, Recall: **0.8569**
+- **small_craft** — AP 50:95: **0.5204**, AR: **0.6739**, F1: **0.6981**, Precision: **0.9487**, Recall: **0.5522**
+
 ## End-to-End Pipeline
 1. Register source videos and build a video registry.
 2. Sample frames into an annotation pool.
