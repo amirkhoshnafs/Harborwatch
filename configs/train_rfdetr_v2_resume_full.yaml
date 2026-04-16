@@ -1,0 +1,29 @@
+# configs/train_rfdetr_v2_resume_full.yaml
+
+project:
+  name: harborwatch
+  run_name: harborwatch_rfdetr_nano_v2_resume_full
+
+dataset:
+  dataset_dir: data/processed/harborwatch_rfdetr_coco_v2_clean
+  num_classes: 3
+  class_names:
+    - large_vessel
+    - buoy
+    - small_craft
+
+model:
+  family: rfdetr
+  size: nano
+
+train:
+  epochs: 100
+  batch_size: 6
+  grad_accum_steps: 16
+  lr: 0.0001
+  output_dir: outputs/train/harborwatch_rfdetr_nano_v2_resume
+  resume: outputs/train/harborwatch_rfdetr_nano_baseline_v1/last.ckpt
+
+runtime:
+  seed: 42
+  device_preference: cuda

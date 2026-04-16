@@ -1,0 +1,119 @@
+project:
+  name: harborwatch
+  title: "HarborWatch: Maritime Video Analytics from Raw Coastal Footage with RF-DETR"
+  version: "0.1.0"
+  random_seed: 42
+
+problem:
+  type: maritime_video_analytics
+  primary_use_case: fixed_camera_harbor_monitoring
+  model_family: rf_detr
+
+data:
+  primary_source:
+    name: singapore_maritime_dataset
+    subset: visible_onshore
+    mode: video_only
+  secondary_source:
+    name: seadronessee
+    enabled: false
+    purpose: cross_domain_evaluation
+
+classes:
+  names:
+    - buoy
+    - small_craft
+    - large_vessel
+  ignore_unclear_objects: true
+  max_classes_for_mvp: 3
+
+mvp:
+  include:
+    - raw_video_intake
+    - frame_sampling
+    - custom_annotation_policy
+    - dataset_creation
+    - train_val_test_split
+    - rf_detr_training
+    - evaluation
+    - offline_video_inference
+    - annotated_video_export
+    - csv_json_exports
+    - summary_reports
+  exclude:
+    - live_streaming
+    - dashboard
+    - ais_fusion
+    - multi_camera_fusion
+    - geolocation
+    - advanced_collision_forecasting
+    - production_serving
+
+outputs:
+  required:
+    - annotated_mp4
+    - detections_csv
+    - detections_jsonl
+    - run_metadata_json
+    - summary_report_md
+    - snapshots
+
+repo_style:
+  script_first: true
+  notebook_dependent: false
+  config_driven: true
+  save_outputs_to_disk: true
+  minimal_practical_oop: true
+
+roadmap:
+  current_phase: 0
+  next_phase: raw_video_intake_and_dataset_audit
+
+paths:
+  raw_video_dir: data/raw/smd_visible_onshore/videos
+  registry_dir: data/registry
+  phase1_output_dir: outputs/data_audit/phase1
+
+video_intake:
+  source_name: smd_visible_onshore
+  allowed_extensions:
+    - .mp4
+    - .avi
+    - .mov
+    - .mkv
+  recursive: true
+
+phase1:
+  write_registry_csv: true
+  write_registry_json: true
+  write_markdown_report: true
+
+scene_triage:
+  samples_per_video: 9
+  contact_sheet_columns: 3
+  jpeg_quality: 95
+  save_individual_frames: false
+
+triage_labels:
+  usable_values: [yes, no, maybe]
+  keep_for_mvp_values: [yes, no, maybe]
+  scene_type_values: [harbor, coastal_channel, open_water, mixed, unknown]
+  lighting_values: [day, sunrise_sunset, night, mixed, unknown]
+  weather_values: [clear, haze, rain, fog, mixed, unknown]
+  camera_motion_values: [fixed, slight_motion, moving, unknown]
+
+frame_sampling:
+  strategy: sparse_uniform
+  only_usable_yes: true
+  only_keep_for_mvp_yes: true
+  sample_every_seconds: 5.0
+  image_extension: ".jpg"
+  jpeg_quality: 95
+  save_manifest_csv: true
+  save_manifest_jsonl: true
+
+paths:
+  sampled_frames_dir: data/interim/sampled_frames
+  frame_manifest_csv: data/registry/frame_manifest.csv
+  frame_manifest_jsonl: data/registry/frame_manifest.jsonl
+  frame_sampling_report_md: outputs/data_audit/phase1/frame_sampling_report.md

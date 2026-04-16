@@ -1,0 +1,25 @@
+# configs/v2_sampling.yaml
+
+project:
+  name: harborwatch
+  version: "v2_sampling_plan"
+
+paths:
+  video_root: data/raw/smd_visible_onshore/videos
+  video_registry_csv: data/registry/video_registry.csv
+  priority_videos_txt: data/registry/v2_priority_videos.txt
+  output_frames_dir: data/interim/v2_sampled_frames
+  output_manifest_csv: data/registry/v2_frame_manifest.csv
+  output_manifest_jsonl: data/registry/v2_frame_manifest.jsonl
+  output_report_md: outputs/data_audit/phase5/v2_sampling_report.md
+
+sampling:
+  default_fps: 1.0
+  priority_fps: 2.0
+  only_usable_yes: true
+  only_keep_for_mvp_yes: true
+  image_extension: ".jpg"
+  jpeg_quality: 95
+
+notes:
+  strategy: "1 fps for all videos, 2 fps for buoy-priority videos"

@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+env/
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Data
+data/raw/
+data/interim/
+data/processed/
+
+# Heavy outputs
+outputs/train/
+outputs/runs/
+outputs/analysis/
+outputs/auto_annotate/
+
+# Model files
+*.ckpt
+*.pth
+*.pt
+*.onnx
+
+# Logs
+*.log
+events.out.tfevents.*

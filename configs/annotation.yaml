@@ -1,0 +1,62 @@
+project:
+  name: harborwatch
+  annotation_policy_version: "0.1.0"
+
+annotation:
+  task: object_detection
+  export_format: coco
+  image_manifest: data/registry/frame_manifest.csv
+  class_taxonomy_doc: docs/class_taxonomy.md
+  guidelines_doc: docs/annotation_guidelines.md
+
+classes:
+  - id: 1
+    name: large_vessel
+    description: clearly visible large maritime vessel
+  - id: 2
+    name: buoy
+    description: clearly visible buoy or buoy-like floating navigation marker
+  - id: 3
+    name: small_craft
+    description: clearly visible small or non-large watercraft
+
+policy:
+  ignore_ambiguous_objects: true
+  allow_empty_images: true
+  one_box_per_physical_object: true
+  do_not_group_multiple_objects: true
+  label_stationary_vessels: true
+  label_moving_vessels: true
+  label_background_vessels_if_clear: true
+
+visibility_rules:
+  min_box_short_side_hard_ignore_px: 8
+  min_box_short_side_preferred_px: 12
+  min_visible_fraction_truncated: 0.30
+  min_visible_fraction_occluded: 0.40
+
+box_rules:
+  include_reflection: false
+  include_wake: false
+  include_shadow: false
+  include_water_splash: false
+  vessel_include_main_visible_body: true
+  vessel_include_detached_wake: false
+  vessel_include_reflection: false
+  buoy_include_visible_marker_body: true
+  buoy_include_anchor_line: false
+  buoy_include_reflection: false
+
+ignore_rules:
+  - reflection_only
+  - wake_only
+  - shadow_only
+  - tiny_ambiguous_object
+  - floating_debris
+  - dock_infrastructure
+  - shoreline_structure
+  - object_with_unresolvable_class
+
+notes:
+  philosophy: consistency_over_granularity
+  mvp_taxonomy_size: 3

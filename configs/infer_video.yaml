@@ -1,0 +1,35 @@
+# configs/infer_video.yaml
+
+project:
+  name: harborwatch
+
+run:
+  name: harborwatch_demo_run_v1
+
+model:
+  checkpoint: outputs/train/harborwatch_rfdetr_nano_v2_resume/checkpoint_best_total.pth
+  categories_json: data/processed/harborwatch_rfdetr_coco_v2_clean/train/_annotations.coco.json
+
+input:
+  video_path: data/raw/smd_visible_onshore/videos/MVI_1583_VIS.avi
+
+output:
+  root_dir: outputs/runs
+
+inference:
+  threshold: 0.35
+  frame_stride: 1
+  max_frames: null
+
+snapshots:
+  enabled: true
+  min_seconds_between: 5.0
+
+render:
+  line_thickness: 2
+  font_scale: 0.6
+  draw_confidence: true
+  class_colors_hex:
+    buoy: "#733380"
+    large_vessel: "#3df53d"
+    small_craft: "#fa3253"
